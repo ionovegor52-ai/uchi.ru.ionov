@@ -1,1 +1,177 @@
- 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f6f2">
+<title>Учебный кабинет</title>
+<style>
+/* Подключаем шрифт, максимально похожий на логотип Учи.ру */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
+
+:root{--ink:#171717;--muted:#858585;--line:#e7e5e1;--purple:#843db0;--bg:#f7f6f2;--mint:#dcebe7;--uchi-red:#ff5a6e;--success:#2eb872}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.navwrap{width:min(100%,820px);margin:auto;padding:12px 16px 0}
+.navtop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+.brand{display:flex;align-items:center;gap:9px;}
+.logo-text {
+    font-family: 'Nunito', 'Arial Rounded MT Bold', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--uchi-red);
+    letter-spacing: -1.5px;
+    user-select: none;
+}
+
+.profilebtn{border:0;background:#f1eff2;border-radius:18px;padding:9px 12px;font:inherit;font-size:13px;font-weight:700;color:#333;cursor:pointer}
+nav{display:flex;gap:5px;overflow:auto;margin-top:13px;scrollbar-width:none}
+nav button{border:0;background:transparent;padding:11px 12px 12px;color:#777;font:inherit;font-size:13px;font-weight:650;white-space:nowrap;border-bottom:3px solid transparent;cursor:pointer}
+nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
+.wrap{width:min(100%,760px);margin:0 auto;padding:22px 18px 48px}
+.pagehead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:5px 0 20px}
+.heading{display:flex;align-items:center;gap:13px;font-size:25px;font-weight:800;letter-spacing:-.6px}
+.back{width:40px;height:40px;border-radius:50%;background:#eeece8;display:grid;place-items:center;font-size:25px;color:#444;flex:none}
+.profile{text-align:right;font-size:14px;font-weight:750;line-height:1.35}
+.profile small{display:block;color:var(--muted);font-size:12px;font-weight:500}
+.limit{display:inline-flex;align-items:center;gap:9px;border-radius:20px;background:#f0eeea;padding:8px 12px;color:#4b4844;font-size:12px;margin-bottom:18px}
+.dot{width:10px;height:10px;background:#e5a65f;border-radius:50%}
+.mint{background:var(--mint);border-radius:19px;padding:24px 22px;margin:0 0 34px;font-size:17px;min-height:92px;display:flex;align-items:center}
+
+/* Плашка "Задание сдано!" */
+.badge-submitted {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #e6f6ec;
+    color: var(--success);
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+.badge-submitted::before {
+    content: '✓';
+    font-size: 13px;
+}
+
+.section{font-size:27px;font-weight:800;letter-spacing:-.6px;margin:0 0 22px;}
+
+.cards{display:grid;gap:17px}
+.card{background:#fff;border:1px solid #e6e4df;border-radius:22px;overflow:hidden;box-shadow:0 2px 7px #00000008;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.card:active{transform:scale(.99);box-shadow:0 1px 3px #0002}
+.cardbody{padding:24px 20px 15px}
+.taskname{font-size:24px;font-weight:500;margin:0 0 12px} 
+
+/* Стили для дедлайна */
+.deadline{font-size:13px; color:#858585; margin-bottom: 10px;}
+.deadline b { color: var(--success); font-weight: 700;}
+
+.stats{display:flex;align-items:baseline;justify-content:space-between;gap:10px; margin-top: 10px;}
+.percent{font-size:27px;font-weight:800}
+.count{font-size:14px;color:#888;white-space:nowrap}
+.count b{font-size:27px;color:#171717;margin-right:5px}
+.bar{height:9px;background:#eee9f0}
+.fill{height:100%;background:linear-gradient(90deg,#7432a5,#a44ac0);border-radius:0 8px 8px 0}
+.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;margin:14px 0}
+.panel h2{margin:0 0 12px;font-size:22px}
+.panel p{color:#555;line-height:1.5;margin:8px 0}
+.action{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:15px;padding:16px;margin:10px 0;font:inherit;cursor:pointer}
+.action b{display:block;margin-bottom:4px}.action span{font-size:13px;color:#888}
+.secondary{background:#f1eff2;color:#332b38;border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:650;cursor:pointer}
+.overlay{position:fixed;inset:0;background:#17131c66;display:none;align-items:flex-end;justify-content:center;z-index:10;padding:16px}
+.overlay.show{display:flex}
+.modal{width:min(100%,520px);background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 50px #0003}
+.modal h2{margin:0 0 10px;font-size:22px}.modal p{color:#555;line-height:1.5}
+.modalactions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+@media(min-width:600px){.wrap{padding-top:30px}.heading{font-size:29px}.cardbody{padding:28px 22px 16px}.taskname{font-size:27px}.overlay{align-items:center}}
+</style>
+</head>
+<body>
+<header>
+ <div class="navwrap">
+  <div class="navtop">
+   <div class="brand">
+       <span class="logo-text">uchi.ru</span>
+   </div>
+   <button class="profilebtn" data-page="profile">Ионов Егор⌄</button>
+  </div>
+  <nav aria-label="Главная навигация">
+   <button class="active" data-page="tasks">Задания</button>
+   <button data-page="profile">Личный кабинет</button>
+   <button data-page="results">Результаты</button>
+   <button data-page="about">О нас</button>
+  </nav>
+ </div>
+</header>
+<main class="wrap" id="main"></main>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+ <div class="modal">
+  <h2 id="modalTitle">Задание</h2>
+  <p id="modalText">Задание будет проверено учителем.</p>
+  <div class="modalactions"><button class="secondary" id="closeModal">Закрыть</button></div>
+ </div>
+</div>
+<script>
+const tasks=[
+ {n:105, done:5, total:5, score:100, deadline: 'До 31 окт. <b>Выполнено!</b>'},
+ {n:102, done:8, total:8, score:100},
+ {n:75, done:12, total:12, score:100},
+ {n:34, done:7, total:7, score:96},
+ {n:44, done:18, total:18, score:100},
+ {n:56, done:9, total:9, score:94},
+ {n:78, done:15, total:15, score:98}
+];
+
+const main=document.getElementById('main'), overlay=document.getElementById('overlay');
+
+function taskCards(){
+    return `
+    <h2 class="section">Завершённые задания ⓘ</h2>
+    <section class="cards">
+    ${tasks.map(t=>`
+ <article class="card" tabindex="0" role="button" data-task="${t.n}" aria-label="Открыть задание ${t.n}">
+  <div class="cardbody">
+   <p class="taskname">Задание № ${t.n}</p>
+   ${t.deadline ? `<div class="deadline">${t.deadline}</div>` : ''}
+   <div class="badge-submitted">Задание сдано!</div>
+   <div class="stats"><span class="percent">${t.score}%</span><span class="count"><b>${t.done}</b> из ${t.total} заданий</span></div>
+  </div>
+  <div class="bar"><div class="fill" style="width:${t.score}%"></div></div>
+ </article>`).join('')}
+ </section>`
+}
+
+function render(page='tasks'){
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ if(page==='tasks'){
+  main.innerHTML=`<div class="pagehead"><div class="heading"><span class="back">‹</span><span>Новые задания</span></div><div class="profile">Ионов Егор<small>Школа №33 · 9Ж</small></div></div>
+  <div class="limit"><span class="dot"></span><span>Осталось 10 из 30 бесплатных заданий</span></div>
+  <div class="mint">Пока ничего не задано.</div>${taskCards()}`;
+ }else if(page==='profile'){
+  main.innerHTML=`<h1 class="section">Личный кабинет</h1><div class="panel"><h2>Ионов Егор</h2><p>Школа №33 · 9Ж</p><p>Учебный профиль</p></div>
+  <button class="action" data-page="results"><b>Мои результаты</b><span>Посмотреть завершённые задания</span></button>
+  <button class="action" data-page="tasks"><b>Задания</b><span>Перейти к списку заданий</span></button>
+  <button class="action" data-page="about"><b>О нас</b><span>Информация об учебном макете</span></button>`;
+ }else if(page==='results'){
+  main.innerHTML=`<h1 class="section">Результаты</h1><div class="panel"><h2>Завершённые задания</h2><p>Выполнено заданий: <b>${tasks.length}</b></p><p>Средний результат: <b>${Math.round(tasks.reduce((s,t)=>s+t.score,0)/tasks.length)}%</b></p></div>${taskCards()}`;
+ }else{
+  // Убрали текст про "не официальный сайт"
+  main.innerHTML=`<h1 class="section">О нас</h1><div class="panel"><h2>Учебный кабинет</h2><p>Платформа для интерактивного обучения и проверки знаний.</p><p>Здесь вы можете выполнять задания, отслеживать свой прогресс и получать результаты от учителя.</p></div><button class="action" data-page="tasks"><b>Вернуться к заданиям</b><span>Открыть список выполненных заданий</span></button>`;
+ }
+}
+
+function openTask(n){document.getElementById('modalTitle').textContent='Задание № '+n;document.getElementById('modalText').textContent='Задание будет проверено учителем.';overlay.classList.add('show')}
+document.addEventListener('click',e=>{
+ const page=e.target.closest('[data-page]');if(page){render(page.dataset.page);return}
+ const card=e.target.closest('[data-task]');if(card){openTask(card.dataset.task);return}
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-task]')){e.preventDefault();openTask(e.target.dataset.task)}});
+document.getElementById('closeModal').addEventListener('click',()=>overlay.classList.remove('show'));
+overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('show')});
+render();
+</script>
+</body></html>
