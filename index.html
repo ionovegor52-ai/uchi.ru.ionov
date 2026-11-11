@@ -64,7 +64,8 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 .card{background:#fff;border:1px solid #e6e4df;border-radius:22px;overflow:hidden;box-shadow:0 2px 7px #00000008;cursor:pointer;transition:transform .12s,box-shadow .12s}
 .card:active{transform:scale(.99);box-shadow:0 1px 3px #0002}
 .cardbody{padding:24px 20px 15px}
-.taskname{font-size:24px;font-weight:500;margin:0 0 12px} 
+.taskname{font-size:24px;font-weight:500;margin:0 0 8px} 
+.taskmeta {font-size: 13px; color: #858585; margin-bottom: 8px;}
 
 /* Стили для дедлайна */
 .deadline{font-size:13px; color:#858585; margin-bottom: 10px;}
@@ -117,6 +118,8 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 </div>
 <script>
 const tasks=[
+ {n:'Викторина по ИИ', done:15, total:15, score:98, meta: 'Выполнено 9 ноября', time: '54 минуты'},
+ {n:'Задание от учителя', done:6, total:6, score:92, meta: 'Выполнено 10 ноября', time: '41 минута'},
  {n:105, done:5, total:5, score:100, deadline: 'До 31 окт. <b>Выполнено!</b>'},
  {n:102, done:8, total:8, score:100},
  {n:75, done:12, total:12, score:100},
@@ -135,7 +138,8 @@ function taskCards(){
     ${tasks.map(t=>`
  <article class="card" tabindex="0" role="button" data-task="${t.n}" aria-label="Открыть задание ${t.n}">
   <div class="cardbody">
-   <p class="taskname">Задание № ${t.n}</p>
+   <p class="taskname">${typeof t.n === 'number' ? 'Задание № ' + t.n : t.n}</p>
+   ${t.meta ? `<div class="taskmeta">${t.meta} • ${t.time}</div>` : ''}
    ${t.deadline ? `<div class="deadline">${t.deadline}</div>` : ''}
    <div class="badge-submitted">Задание сдано!</div>
    <div class="stats"><span class="percent">${t.score}%</span><span class="count"><b>${t.done}</b> из ${t.total} заданий</span></div>
@@ -159,17 +163,15 @@ function render(page='tasks'){
  }else if(page==='results'){
   main.innerHTML=`<h1 class="section">Результаты</h1><div class="panel"><h2>Завершённые задания</h2><p>Выполнено заданий: <b>${tasks.length}</b></p><p>Средний результат: <b>${Math.round(tasks.reduce((s,t)=>s+t.score,0)/tasks.length)}%</b></p></div>${taskCards()}`;
  }else{
-  // Убрали текст про "не официальный сайт"
   main.innerHTML=`<h1 class="section">О нас</h1><div class="panel"><h2>Учебный кабинет</h2><p>Платформа для интерактивного обучения и проверки знаний.</p><p>Здесь вы можете выполнять задания, отслеживать свой прогресс и получать результаты от учителя.</p></div><button class="action" data-page="tasks"><b>Вернуться к заданиям</b><span>Открыть список выполненных заданий</span></button>`;
  }
 }
 
-function openTask(n){document.getElementById('modalTitle').textContent='Задание № '+n;document.getElementById('modalText').textContent='Задание будет проверено учителем.';overlay.classList.add('show')}
+function openTask(n){document.getElementById('modalTitle').textContent=typeof n === 'number' ? 'Задание № '+n : n;document.getElementById('modalText').textContent='Задание будет проверено учителем.';overlay.classList.add('show')}
 document.addEventListener('click',e=>{
  const page=e.target.closest('[data-page]');if(page){render(page.dataset.page);return}
  const card=e.target.closest('[data-task]');if(card){openTask(card.dataset.task);return}
 });
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-task]')){e.preventDefault();openTask(e.target.dataset.task)}});
 document.getElementById('closeModal').addEventListener('click',()=>overlay.classList.remove('show'));
 overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('show')});
 render();
