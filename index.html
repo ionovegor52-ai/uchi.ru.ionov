@@ -118,6 +118,7 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 </div>
 <script>
 const tasks=[
+ {n:'ОГЭ. Первая часть (пробный вариант)', done:'14', total:'18', score:79, meta: 'Выполнено 18 ноября', time: '1 час 12 минут'},
  {n:'Викторина по ИИ', done:15, total:15, score:98, meta: 'Выполнено 9 ноября', time: '54 минуты'},
  {n:'Задание от учителя', done:6, total:6, score:92, meta: 'Выполнено 10 ноября', time: '41 минута'},
  {n:105, done:5, total:5, score:100, deadline: 'До 31 окт. <b>Выполнено!</b>'},
@@ -161,7 +162,7 @@ function render(page='tasks'){
   <button class="action" data-page="tasks"><b>Задания</b><span>Перейти к списку заданий</span></button>
   <button class="action" data-page="about"><b>О нас</b><span>Информация об учебном макете</span></button>`;
  }else if(page==='results'){
-  main.innerHTML=`<h1 class="section">Результаты</h1><div class="panel"><h2>Завершённые задания</h2><p>Выполнено заданий: <b>${tasks.length}</b></p><p>Средний результат: <b>${Math.round(tasks.reduce((s,t)=>s+t.score,0)/tasks.length)}%</b></p></div>${taskCards()}`;
+  main.innerHTML=`<h1 class="section">Результаты</h1><div class="panel"><h2>Завершённые задания</h2><p>Выполнено заданий: <b>${tasks.length}</b></p><p>Средний результат: <b>${Math.round(tasks.reduce((s,t)=>s+Number(t.score),0)/tasks.length)}%</b></p></div>${taskCards()}`;
  }else{
   main.innerHTML=`<h1 class="section">О нас</h1><div class="panel"><h2>Учебный кабинет</h2><p>Платформа для интерактивного обучения и проверки знаний.</p><p>Здесь вы можете выполнять задания, отслеживать свой прогресс и получать результаты от учителя.</p></div><button class="action" data-page="tasks"><b>Вернуться к заданиям</b><span>Открыть список выполненных заданий</span></button>`;
  }
