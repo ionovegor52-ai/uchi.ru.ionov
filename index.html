@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -121,8 +120,10 @@ let isLoggedIn = true;
 const main=document.getElementById('main');
 const errorOverlay=document.getElementById('errorOverlay');
 const modalContent=document.getElementById('modalContent');
+
+// ИЗМЕНЕНИЯ ЗДЕСЬ:
 const correctPassword = "карета3861";
-const correctEmail = "ionovegor52@gmail.com";
+const correctLogin = "33"; // Теперь логин 33
 
 function taskCards(){
     return `
@@ -150,7 +151,7 @@ function renderLogin() {
         <div class="logo-text" style="margin-bottom:20px; font-size:32px;">uchi.ru</div>
         <h2>Вход в аккаунт</h2>
         <div class="input-group">
-            <input type="email" id="loginEmail" placeholder="Email или логин">
+            <input type="text" id="loginEmail" placeholder="Логин или Email">
         </div>
         <div class="input-group">
             <input type="password" id="loginPass" placeholder="Пароль">
@@ -167,15 +168,16 @@ function renderLogin() {
     });
 
     document.getElementById('loginBtn').addEventListener('click', () => {
-        const email = document.getElementById('loginEmail').value.trim();
+        const loginVal = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
 
-        if (email !== correctEmail) {
-            showModal("Ошибка", "Аккаунт с таким email не найден.", "error");
+        if (loginVal !== correctLogin && loginVal !== "ionovegor52@gmail.com") {
+            showModal("Ошибка", "Аккаунт с таким логином не найден.", "error");
         } else if (pass !== correctPassword) {
             showModal("Ошибка", "Пароль неправильный.", "error");
         } else {
-            showModal("Ошибка входа", "Аккаунт ionovegor52@gmail.com уже привязан к Школе №33 (класс 9Ж). Обнаружено раздвоение профиля. Вход невозможен из-за технической ошибки синхронизации.", "split");
+            // Изменили текст ошибки под общий логин 33
+            showModal("Ошибка входа", "Аккаунт (логин 33) уже привязан к Школе №33 (класс 9Ж). Обнаружено раздвоение профиля. Вход невозможен из-за технической ошибки синхронизации.", "split");
         }
     });
 
@@ -256,12 +258,13 @@ function render(page='tasks'){
   <div class="limit"><span class="dot"></span><span>Осталось 10 из 30 бесплатных заданий</span></div>
   <div class="mint">Пока ничего не задано.</div>${taskCards()}`;
  }else if(page==='profile'){
+  // Изменили email на Логин: 33 в профиле
   main.innerHTML=`<h1 class="section">Личный кабинет</h1>
   <div class="panel" style="text-align: center;">
     <div class="badge-reserve">Резервный аккаунт</div>
     <h2>Ионов Егор</h2>
     <p>Школа №33 · 9Ж</p>
-    <p style="color:#888; font-size:13px;">${correctEmail}</p>
+    <p style="color:#888; font-size:13px;">Логин: 33</p>
     <button class="danger" id="logoutBtn" style="margin-top:15px; max-width:200px; margin-inline:auto;">Выйти из аккаунта</button>
   </div>`;
   document.getElementById('logoutBtn').addEventListener('click', () => {
