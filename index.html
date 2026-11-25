@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -67,15 +68,19 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 .primary{background:var(--purple);color:#fff;border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:650;cursor:pointer;width:100%;margin-top:10px;}
 .danger{background:var(--danger);color:#fff;border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:650;cursor:pointer;width:100%;margin-top:10px;}
 
-/* Стили для логина */
-.login-box { background: #fff; padding: 30px; border-radius: 20px; max-width: 400px; margin: 50px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+/* Стили для логина и регистрации */
+.login-box { background: #fff; padding: 30px; border-radius: 20px; max-width: 400px; margin: 30px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
 .login-box h2 { margin-top: 0; font-size: 24px; color: var(--ink); }
-.login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+.input-group { position: relative; margin-bottom: 15px; }
+.input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none;}
+.input-group input:focus { border-color: var(--purple); }
+.eye-btn { position: absolute; right: 10px; top: 12px; cursor: pointer; font-size: 18px; color: #888; background: none; border: none; padding: 0; }
 .badge-reserve { display: inline-block; background: #e6f6ec; color: var(--success); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 15px; }
+.link-btn { background: none; border: none; color: var(--purple); cursor: pointer; font-size: 14px; margin-top: 15px; text-decoration: underline; }
 
 .overlay{position:fixed;inset:0;background:#17131c66;display:none;align-items:flex-end;justify-content:center;z-index:10;padding:16px}
 .overlay.show{display:flex}
-.modal{width:min(100%,520px);background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 50px #0003}
+.modal{width:min(100%,520px);background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 50px #0003; max-height: 90vh; overflow-y: auto;}
 .modal h2{margin:0 0 10px;font-size:22px; color: var(--danger)}.modal p{color:#555;line-height:1.5}
 .modalactions{display:flex;flex-direction:column;gap:10px;margin-top:20px}
 @media(min-width:600px){.wrap{padding-top:30px}.heading{font-size:29px}.cardbody{padding:28px 22px 16px}.taskname{font-size:27px}.overlay{align-items:center}}
@@ -102,13 +107,8 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 
 <!-- Модальное окно ошибки -->
 <div class="overlay" id="errorOverlay">
- <div class="modal">
-  <h2>Ошибка входа</h2>
-  <p id="errorText">Аккаунт уже привязан к классу 9Ж. Обнаружено раздвоение профиля. Вход невозможен из-за технической ошибки синхронизации.</p>
-  <div class="modalactions">
-    <button class="primary" id="goReserveBtn">Зайти в резервный</button>
-    <button class="secondary" id="closeErrorBtn">Отмена</button>
-  </div>
+ <div class="modal" id="modalContent">
+  <!-- Содержимое модалки будет меняться через JS -->
  </div>
 </div>
 
@@ -121,9 +121,12 @@ const tasks=[
  {n:102, done:8, total:8, score:100}
 ];
 
-let isLoggedIn = true; // Изначально мы в системе
+let isLoggedIn = true; 
 const main=document.getElementById('main');
 const errorOverlay=document.getElementById('errorOverlay');
+const modalContent=document.getElementById('modalContent');
+const correctPassword = "карета3861";
+const correctEmail = "ionovegor52@gmail.com";
 
 function taskCards(){
     return `
@@ -150,15 +153,92 @@ function renderLogin() {
     <div class="login-box">
         <div class="logo-text" style="margin-bottom:20px; font-size:32px;">uchi.ru</div>
         <h2>Вход в аккаунт</h2>
-        <input type="email" id="loginEmail" placeholder="Email" value="ionovegor52@gmail.com">
-        <input type="password" id="loginPass" placeholder="Пароль" value="карета3861">
+        <div class="input-group">
+            <input type="email" id="loginEmail" placeholder="Email или логин">
+        </div>
+        <div class="input-group">
+            <input type="password" id="loginPass" placeholder="Пароль">
+            <button class="eye-btn" id="togglePass">👁️</button>
+        </div>
         <button class="primary" id="loginBtn">Войти</button>
+        <button class="link-btn" id="toRegisterBtn">Зарегистрироваться</button>
     </div>`;
     
-    document.getElementById('loginBtn').addEventListener('click', () => {
-        // Симулируем ошибку при входе
-        errorOverlay.classList.add('show');
+    document.getElementById('togglePass').addEventListener('click', () => {
+        const passInput = document.getElementById('loginPass');
+        if(passInput.type === 'password') { passInput.type = 'text'; } 
+        else { passInput.type = 'password'; }
     });
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+
+        if (email !== correctEmail) {
+            showModal("Ошибка", "Аккаунт с таким email не найден.", "error");
+        } else if (pass !== correctPassword) {
+            showModal("Ошибка", "Пароль неправильный.", "error");
+        } else {
+            showModal("Ошибка входа", "Аккаунт уже привязан к классу 9Ж. Обнаружено раздвоение профиля. Вход невозможен из-за технической ошибки синхронизации.", "split");
+        }
+    });
+
+    document.getElementById('toRegisterBtn').addEventListener('click', renderRegister);
+}
+
+function renderRegister() {
+    main.innerHTML = `
+    <div class="login-box" style="max-width: 500px;">
+        <div class="logo-text" style="margin-bottom:20px; font-size:32px;">uchi.ru</div>
+        <h2>Регистрация</h2>
+        <div class="input-group"><input type="text" placeholder="Имя"></div>
+        <div class="input-group"><input type="text" placeholder="Фамилия"></div>
+        <div class="input-group"><input type="text" placeholder="Населённый пункт"></div>
+        <div class="input-group"><input type="text" placeholder="Школа"></div>
+        <div class="input-group"><input type="text" placeholder="Класс"></div>
+        <div class="input-group"><input type="tel" placeholder="Номер телефона"></div>
+        <div class="input-group"><input type="tel" placeholder="Номер телефона родителя"></div>
+        <div class="input-group"><input type="text" placeholder="Логин от учителя"></div>
+        <div class="input-group"><input type="password" placeholder="Пароль от учителя"></div>
+        
+        <button class="primary" id="regBtn">Зарегистрироваться</button>
+        <button class="link-btn" id="toLoginBtn">Назад ко входу</button>
+    </div>`;
+
+    document.getElementById('regBtn').addEventListener('click', () => {
+        showModal("Ошибка регистрации", "Аккаунт не найден, проверьте логин и пароль от учителя.", "error");
+    });
+    document.getElementById('toLoginBtn').addEventListener('click', renderLogin);
+}
+
+function showModal(title, text, type) {
+    let buttonsHtml = '';
+    if (type === "split") {
+        buttonsHtml = `
+            <button class="primary" id="goReserveBtn">Зайти в резервный</button>
+            <button class="secondary" id="closeErrorBtn">Отмена</button>
+        `;
+    } else {
+        buttonsHtml = `<button class="secondary" id="closeErrorBtn">Ок</button>`;
+    }
+
+    modalContent.innerHTML = `
+        <h2>${title}</h2>
+        <p>${text}</p>
+        <div class="modalactions">${buttonsHtml}</div>
+    `;
+    errorOverlay.classList.add('show');
+
+    if (type === "split") {
+        document.getElementById('goReserveBtn').addEventListener('click', () => {
+            errorOverlay.classList.remove('show');
+            isLoggedIn = true;
+            render('tasks'); 
+        });
+    }
+    
+    const closeBtn = document.getElementById('closeErrorBtn');
+    if(closeBtn) closeBtn.addEventListener('click', () => errorOverlay.classList.remove('show'));
 }
 
 function render(page='tasks'){
@@ -181,7 +261,7 @@ function render(page='tasks'){
     <div class="badge-reserve">Резервный аккаунт</div>
     <h2>Ионов Егор</h2>
     <p>Школа №33 · 9Ж</p>
-    <p style="color:#888; font-size:13px;">ionovegor52@gmail.com</p>
+    <p style="color:#888; font-size:13px;">${correctEmail}</p>
     <button class="danger" id="logoutBtn" style="margin-top:15px; max-width:200px; margin-inline:auto;">Выйти из аккаунта</button>
   </div>`;
   document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -199,17 +279,6 @@ document.addEventListener('click',e=>{
  const page=e.target.closest('[data-page]');if(page){render(page.dataset.page);return}
 });
 document.getElementById('headerProfileBtn').addEventListener('click', () => render('profile'));
-
-// Обработка кнопки "Зайти в резервный" в модалке
-document.getElementById('goReserveBtn').addEventListener('click', () => {
-    errorOverlay.classList.remove('show');
-    isLoggedIn = true;
-    render('tasks'); // Заходим и показываем задания
-});
-
-document.getElementById('closeErrorBtn').addEventListener('click', () => {
-    errorOverlay.classList.remove('show');
-});
 
 render();
 </script>
