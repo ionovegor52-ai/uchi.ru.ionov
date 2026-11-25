@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -67,7 +68,6 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 .primary{background:var(--purple);color:#fff;border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:650;cursor:pointer;width:100%;margin-top:10px;}
 .danger{background:var(--danger);color:#fff;border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:650;cursor:pointer;width:100%;margin-top:10px;}
 
-/* Стили для логина и регистрации */
 .login-box { background: #fff; padding: 30px; border-radius: 20px; max-width: 400px; margin: 30px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
 .login-box h2 { margin-top: 0; font-size: 24px; color: var(--ink); }
 .input-group { position: relative; margin-bottom: 15px; }
@@ -104,7 +104,6 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 </header>
 <main class="wrap" id="main"></main>
 
-<!-- Модальное окно -->
 <div class="overlay" id="errorOverlay">
  <div class="modal" id="modalContent"></div>
 </div>
@@ -176,7 +175,7 @@ function renderLogin() {
         } else if (pass !== correctPassword) {
             showModal("Ошибка", "Пароль неправильный.", "error");
         } else {
-            showModal("Ошибка входа", "Аккаунт уже привязан к классу 9Ж. Обнаружено раздвоение профиля. Вход невозможен из-за технической ошибки синхронизации.", "split");
+            showModal("Ошибка входа", "Аккаунт ionovegor52@gmail.com уже привязан к Школе №33 (класс 9Ж). Обнаружено раздвоение профиля. Вход невозможен из-за технической ошибки синхронизации.", "split");
         }
     });
 
@@ -221,7 +220,6 @@ function showModal(title, text, type) {
         buttonsHtml = `<button class="secondary" id="closeErrorBtn">Ок</button>`;
     }
 
-    // Убираем красный цвет заголовка, если это обычное уведомление
     let titleColor = (type === "task") ? "var(--ink)" : "var(--danger)";
 
     modalContent.innerHTML = `
@@ -280,7 +278,6 @@ function render(page='tasks'){
 document.addEventListener('click',e=>{
  const page=e.target.closest('[data-page]');if(page){render(page.dataset.page);return}
  
- // Обработка клика по карточке задания
  const card = e.target.closest('[data-task]');
  if (card) {
      showModal("Информация", "Задание будет проверено учителем. Ты можешь узнать оценку у него.", "task");
