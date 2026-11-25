@@ -122,12 +122,12 @@ const errorOverlay=document.getElementById('errorOverlay');
 const modalContent=document.getElementById('modalContent');
 
 // ИЗМЕНЕНИЯ ЗДЕСЬ:
-const correctPassword = "карета3861";
+const correctPassword = "32373карета";
 const correctLogin = "33"; // Теперь логин 33
 
 function taskCards(){
     return `
-    <h2 class="section">Завершённые задания ⓘ</h2>
+    <h2 class="section">Завершённые задания</h2>
     <section class="cards">
     ${tasks.map(t=>`
  <article class="card" tabindex="0" role="button" data-task="${t.n}" aria-label="Открыть задание ${t.n}">
