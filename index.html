@@ -8,7 +8,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&display=swap');
 
-:root{--ink:#171717;--muted:#858585;--line:#e7e5e1;--purple:#843db0;--bg:#f7f6f2;--mint:#dcebe7;--uchi-red:#ff5a6e;--success:#2eb872;--danger:#e53935}
+:root{--ink:#171717;--muted:#858585;--line:#e7e5e1;--purple:#843db0;--bg:#f7f6f2;--mint:#dcebe7;--uchi-red:#ff5a6e;--success:#2eb872;--danger:#e53935;--blue:#2196F3}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; height: 100vh; overflow-y: auto;}
 header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
@@ -76,6 +76,13 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 .badge-reserve { display: inline-block; background: #e6f6ec; color: var(--success); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 15px; }
 .link-btn { background: none; border: none; color: var(--purple); cursor: pointer; font-size: 14px; margin-top: 15px; text-decoration: underline; }
 
+/* Стили для техподдержки */
+.ticket { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+.ticket-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 13px; color: #888; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+.ticket-msg { margin-bottom: 15px; line-height: 1.5; font-size: 15px; }
+.ticket-reply { background: #e3f2fd; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid var(--blue); }
+.ticket-reply p { margin: 0 0 10px 0; }
+
 .overlay{position:fixed;inset:0;background:#17131c66;display:none;align-items:flex-end;justify-content:center;z-index:10;padding:16px}
 .overlay.show{display:flex}
 .modal{width:min(100%,520px);background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 50px #0003; max-height: 90vh; overflow-y: auto;}
@@ -97,7 +104,7 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
    <button class="active" data-page="tasks">Задания</button>
    <button data-page="profile">Личный кабинет</button>
    <button data-page="results">Результаты</button>
-   <button data-page="about">О нас</button>
+   <button data-page="support">Техподдержка</button>
   </nav>
  </div>
 </header>
@@ -121,13 +128,13 @@ const main=document.getElementById('main');
 const errorOverlay=document.getElementById('errorOverlay');
 const modalContent=document.getElementById('modalContent');
 
-// ИЗМЕНЕНИЯ ЗДЕСЬ:
+// ОБНОВЛЕННЫЕ ДАННЫЕ
 const correctPassword = "32373карета";
-const correctLogin = "33"; // Теперь логин 33
+const correctLogin = "33";
 
 function taskCards(){
     return `
-    <h2 class="section">Завершённые задания</h2>
+    <h2 class="section">Завершённые задания ⓘ</h2>
     <section class="cards">
     ${tasks.map(t=>`
  <article class="card" tabindex="0" role="button" data-task="${t.n}" aria-label="Открыть задание ${t.n}">
@@ -171,12 +178,11 @@ function renderLogin() {
         const loginVal = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
 
-        if (loginVal !== correctLogin && loginVal !== "ionovegor52@gmail.com") {
+        if (loginVal !== correctLogin) {
             showModal("Ошибка", "Аккаунт с таким логином не найден.", "error");
         } else if (pass !== correctPassword) {
             showModal("Ошибка", "Пароль неправильный.", "error");
         } else {
-            // Изменили текст ошибки под общий логин 33
             showModal("Ошибка входа", "Аккаунт (логин 33) уже привязан к Школе №33 (класс 9Ж). Обнаружено раздвоение профиля. Вход невозможен из-за технической ошибки синхронизации.", "split");
         }
     });
@@ -207,6 +213,34 @@ function renderRegister() {
         showModal("Ошибка регистрации", "Аккаунт не найден, проверьте логин и пароль от учителя.", "error");
     });
     document.getElementById('toLoginBtn').addEventListener('click', renderLogin);
+}
+
+function renderSupport() {
+    main.innerHTML = `
+        <h1 class="section">Техподдержка</h1>
+        <div class="ticket">
+            <div class="ticket-header">
+                <span><b>Тикет #89231</b></span>
+                <span>Закрыт</span>
+            </div>
+            <div class="ticket-msg">
+                <b>Вы:</b> Здравствуйте, у меня проблема. При входе в аккаунт (логин 33) выдает ошибку, что профиль раздвоился. Мои результаты не отображаются у учителя в журнале. Помогите, пожалуйста.
+            </div>
+            
+            <div class="ticket-reply">
+                <b>Техподдержка Учи.ру:</b>
+                <p>Здравствуйте! Мы обнаружили техническую ошибку синхронизации вашего профиля с классом. Проблема решена. Ваши данные объединены.</p>
+                <p>Для дальнейшего входа в систему используйте следующие данные:</p>
+                <p><b>Логин:</b> 33<br><b>Пароль:</b> 32373карета</p>
+                <button class="primary" id="goToLoginFromSupport">Перейти в личный кабинет</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('goToLoginFromSupport').addEventListener('click', () => {
+        isLoggedIn = false; // Выкидываем на экран входа, чтобы он ввел новые данные
+        render();
+    });
 }
 
 function showModal(title, text, type) {
@@ -253,12 +287,12 @@ function render(page='tasks'){
  document.getElementById('mainNav').style.display = 'flex';
  
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ 
  if(page==='tasks'){
   main.innerHTML=`<div class="pagehead"><div class="heading"><span class="back">‹</span><span>Новые задания</span></div><div class="profile">Ионов Егор<small>Школа №33 · 9Ж</small></div></div>
   <div class="limit"><span class="dot"></span><span>Осталось 10 из 30 бесплатных заданий</span></div>
   <div class="mint">Пока ничего не задано.</div>${taskCards()}`;
  }else if(page==='profile'){
-  // Изменили email на Логин: 33 в профиле
   main.innerHTML=`<h1 class="section">Личный кабинет</h1>
   <div class="panel" style="text-align: center;">
     <div class="badge-reserve">Резервный аккаунт</div>
@@ -273,6 +307,8 @@ function render(page='tasks'){
   });
  }else if(page==='results'){
   main.innerHTML=`<h1 class="section">Результаты</h1><div class="panel"><h2>Завершённые задания</h2><p>Выполнено заданий: <b>${tasks.length}</b></p><p>Средний результат: <b>${Math.round(tasks.reduce((s,t)=>s+Number(t.score),0)/tasks.length)}%</b></p></div>${taskCards()}`;
+ }else if(page==='support'){
+     renderSupport();
  }else{
   main.innerHTML=`<h1 class="section">О нас</h1><div class="panel"><h2>Учебный кабинет</h2><p>Платформа для интерактивного обучения и проверки знаний.</p></div><button class="action" data-page="tasks"><b>Вернуться к заданиям</b></button>`;
  }
