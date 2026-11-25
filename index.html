@@ -48,11 +48,9 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 .card:active{transform:scale(.99);box-shadow:0 1px 3px #0002}
 .cardbody{padding:24px 20px 15px}
 .taskname{font-size:24px;font-weight:500;margin:0 0 8px} 
-
-/* Новые стили для мета-инфы задания (дедлайн и автор) */
-.task-meta-info { display: flex; flex-wrap: wrap; gap: 15px; font-size: 13px; color: #777; margin-bottom: 12px; align-items: center; }
-.task-meta-info span { display: flex; align-items: center; gap: 5px; }
-.task-meta-info svg { width: 14px; height: 14px; fill: currentColor; }
+.taskmeta {font-size: 13px; color: #858585; margin-bottom: 8px;}
+.deadline{font-size:13px; color:#858585; margin-bottom: 10px;}
+.deadline b { color: var(--success); font-weight: 700;}
 
 .stats{display:flex;align-items:baseline;justify-content:space-between;gap:10px; margin-top: 10px;}
 .percent{font-size:27px;font-weight:800}
@@ -78,13 +76,19 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 .badge-reserve { display: inline-block; background: #e6f6ec; color: var(--success); padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 14px; margin-bottom: 15px; }
 .link-btn { background: none; border: none; color: var(--purple); cursor: pointer; font-size: 14px; margin-top: 15px; text-decoration: underline; }
 
-/* Стили для чата поддержки */
-.chat-container { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto;}
-.chat-msg { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; position: relative;}
-.chat-msg.user { align-self: flex-end; background: #e3f2fd; border-bottom-right-radius: 4px;}
-.chat-msg.support { align-self: flex-start; background: #f1f1f1; border-bottom-left-radius: 4px;}
-.chat-time { font-size: 11px; color: #999; margin-top: 5px; display: block; text-align: right; }
-.chat-link { color: var(--blue); text-decoration: none; font-weight: 600; word-break: break-all; display: inline-block; margin-top: 8px;}
+/* Стили для чата техподдержки */
+.chat-container { background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 70vh; }
+.chat-header { background: #f8f9fa; padding: 15px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.chat-header .avatar { width: 36px; height: 36px; background: var(--blue); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #e5ddd5; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-size: cover; display: flex; flex-direction: column; gap: 10px; }
+.message { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.4; position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.message.user { background: #dcf8c6; align-self: flex-end; border-bottom-right-radius: 2px; }
+.message.support { background: #fff; align-self: flex-start; border-bottom-left-radius: 2px; }
+.msg-time { font-size: 10px; color: #999; text-align: right; margin-top: 4px; display: block; }
+.msg-link { color: var(--blue); text-decoration: none; word-break: break-all; display: block; margin-top: 5px; font-weight: 500;}
+.chat-footer { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; }
+.chat-footer input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 20px; outline: none; }
+.chat-footer button { background: var(--blue); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center;}
 
 .overlay{position:fixed;inset:0;background:#17131c66;display:none;align-items:flex-end;justify-content:center;z-index:10;padding:16px}
 .overlay.show{display:flex}
@@ -118,13 +122,12 @@ nav button.active{color:var(--purple);border-bottom-color:var(--purple)}
 </div>
 
 <script>
-// Убрали название задания, добавили Дедлайн и Автора
 const tasks=[
- {n:'Задание от учителя', done:'14', total:'18', score:79, deadline: 'До 27 ноября, 22:59', author: 'Денисюк Галина Михайловна'},
- {n:'Викторина по ИИ', done:15, total:15, score:98, meta: 'Выполнено 9 ноября • 54 минуты'},
- {n:'Задание от учителя', done:6, total:6, score:92, meta: 'Выполнено 10 ноября • 41 минута'},
- {n:105, done:5, total:5, score:100, deadline: 'До 31 окт. <b>Выполнено!</b>'},
- {n:102, done:8, total:8, score:100}
+ {n:1, done:'8', total:'10', score:80, meta: 'Задано: 25 ноября', time: 'Кто задал: Денисюк Галина Михайловна'}, // Новое задание
+ {n:'ОГЭ. Первая часть (пробный вариант)', done:'14', total:'18', score:79, meta: 'Выполнено 18 ноября', time: '1 час 12 минут'},
+ {n:'Викторина по ИИ', done:15, total:15, score:98, meta: 'Выполнено 9 ноября', time: '54 минуты'},
+ {n:'Задание от учителя', done:6, total:6, score:92, meta: 'Выполнено 10 ноября', time: '41 минута'},
+ {n:105, done:5, total:5, score:100, deadline: 'До 31 окт. <b>Выполнено!</b>'}
 ];
 
 let isLoggedIn = true; 
@@ -142,16 +145,10 @@ function taskCards(){
     ${tasks.map(t=>`
  <article class="card" tabindex="0" role="button" data-task="${t.n}" aria-label="Открыть задание ${t.n}">
   <div class="cardbody">
-   <p class="taskname">${typeof t.n === 'number' ? 'Задание № ' + t.n : t.n}</p>
-   
-   ${t.deadline || t.author ? `
-   <div class="task-meta-info">
-       ${t.deadline ? `<span><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>${t.deadline}</span>` : ''}
-       ${t.author ? `<span><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>${t.author}</span>` : ''}
-   </div>` : ''}
-
-   ${t.meta ? `<div class="taskmeta" style="color:#858585; font-size:13px; margin-bottom:8px;">${t.meta}</div>` : ''}
-   
+   <p class="taskname">${typeof t.n === 'number' ? 'Задание' : t.n}</p>
+   ${t.meta ? `<div class="taskmeta">${t.meta}</div>` : ''}
+   ${t.time ? `<div class="taskmeta">${t.time}</div>` : ''}
+   ${t.deadline ? `<div class="deadline">${t.deadline}</div>` : ''}
    <div class="badge-submitted">Задание сдано!</div>
    <div class="stats"><span class="percent">${t.score}%</span><span class="count"><b>${t.done}</b> из ${t.total} заданий</span></div>
   </div>
@@ -229,18 +226,42 @@ function renderSupport() {
     main.innerHTML = `
         <h1 class="section">Техподдержка</h1>
         <div class="chat-container">
-            <div class="chat-msg user">
-                Здравствуйте, у меня проблема. При входе в аккаунт выдает ошибку, что профиль раздвоился. Мои результаты не отображаются у учителя в журнале. Помогите, пожалуйста.
-                <span class="chat-time">25.11, 14:30</span>
+            <div class="chat-header">
+                <div class="avatar">🎧</div>
+                <div>Служба поддержки Учи.ру<br><span style="font-size:11px; color:#4caf50; font-weight:normal;">Онлайн</span></div>
             </div>
-            
-            <div class="chat-msg support">
-                Здравствуйте! Мы обнаружили техническую ошибку синхронизации вашего профиля с классом. Проблема решена. Ваши данные объединены.
-                <br><br>
-                Для дальнейшего входа в систему перейдите в настройки вашего профиля по ссылке:
-                <br>
-                <a href="javascript:void(0)" class="chat-link" onclick="alert('Переход недоступен в демо-режиме')">https://uchi.ru/profile/students/settings</a>
-                <span class="chat-time">25.11, 14:42</span>
+            <div class="chat-body">
+                <div class="message support">
+                    Здравствуйте! Чем я могу вам помочь?
+                    <span class="msg-time">10:02</span>
+                </div>
+                <div class="message user">
+                    Здравствуйте, у меня проблема. При входе в аккаунт (логин 33) выдает ошибку, что профиль раздвоился. Мои результаты не отображаются у учителя в журнале. Помогите, пожалуйста.
+                    <span class="msg-time">10:05</span>
+                </div>
+                <div class="message support">
+                    Здравствуйте! Мы обнаружили техническую ошибку синхронизации вашего профиля с классом. Проблема решена. Ваши данные объединены.
+                    <span class="msg-time">10:12</span>
+                </div>
+                <div class="message support">
+                    Для дальнейшего входа в систему используйте следующие данные:<br>
+                    <b>Логин:</b> 33<br><b>Пароль:</b> 32373карета<br><br>
+                    Также вы можете проверить настройки профиля по ссылке:
+                    <a href="https://uchi.ru/profile/students/settings" target="_blank" class="msg-link">https://uchi.ru/profile/students/settings</a>
+                    <span class="msg-time">10:13</span>
+                </div>
+                <div class="message user">
+                    Спасибо, но у меня все равно выдает ошибку при входе! Что делать?
+                    <span class="msg-time">10:20</span>
+                </div>
+                <div class="message support">
+                    Попробуйте очистить кэш браузера или зайти с другого устройства. Если ошибка сохраняется, используйте функцию "Зайти в резервный" при входе. Приносим извинения за неудобства.
+                    <span class="msg-time">10:25</span>
+                </div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" placeholder="Сообщение..." disabled>
+                <button disabled>➤</button>
             </div>
         </div>
     `;
@@ -253,6 +274,8 @@ function showModal(title, text, type) {
             <button class="primary" id="goReserveBtn">Зайти в резервный</button>
             <button class="secondary" id="closeErrorBtn">Отмена</button>
         `;
+    } else if (type === "task") {
+        buttonsHtml = `<button class="secondary" id="closeErrorBtn">Ок</button>`;
     } else {
         buttonsHtml = `<button class="secondary" id="closeErrorBtn">Ок</button>`;
     }
